@@ -11,13 +11,13 @@
   },
 
   "background": {
-    "scripts": ["test.js"],
+    "scripts": ["background.js"],
     "persistent": true
   },
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/watch*"],
-      "js": ["popup.js"]
+      "js": ["content.js"]
     }
   ],
 

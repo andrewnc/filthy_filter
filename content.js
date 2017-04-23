@@ -10,7 +10,7 @@ function toggle_transcript(){
 }
 
 function get_current_words_data(){
-	// check next highlight as well
+
 	var current_line = document.getElementsByClassName("caption-line-highlight")[0];
 	if(current_line == null){
 		current_line = document.getElementsByClassName("caption-line")[0];
