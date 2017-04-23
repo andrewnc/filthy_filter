@@ -19,8 +19,6 @@ function get_current_words_data(){
 	var next_line = current_line.nextSibling;
 
 
-
-
 	var current_time = current_line.getElementsByClassName("caption-line-time")[0];
 
 	var current_words = current_line.getElementsByClassName("caption-line-text")[0].innerHTML;
@@ -48,7 +46,7 @@ function run_once(){
 
 
 	toggle_transcript();
-	var words = ["hospital", "bigfoot"];
+	var words = ["bigfoot", "Bigfoot"];
 
 	for(var i = 0; i < words.length; i++){
 		if(data[1].includes(words[i])){
@@ -77,7 +75,6 @@ function go(){
 	var mute = response[1];
 	var time = response[0];
 	var capt_leng = caption_length(time[0],time[1]);
-	console.log(capt_leng);
 	return [{success: true, need_to_mute:mute}, capt_leng];
 };
 
