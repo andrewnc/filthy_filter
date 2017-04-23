@@ -31,9 +31,11 @@ function get_current_words_data(){
 	var next_words = next_line.getElementsByClassName("caption-line-text")[0].innerHTML;
 
 
+	var time = [current_time.innerHTML, next_time.innerHTML];
+
 	current_words += " " + next_words;
-	
-	return [current_time, current_words]
+
+	return [time, current_words]
 }
 
 function run_once(){
@@ -46,7 +48,7 @@ function run_once(){
 
 
 	toggle_transcript();
-	var words = ["hospital"];
+	var words = ["hospital", "bigfoot"];
 
 	for(var i = 0; i < words.length; i++){
 		if(data[1].includes(words[i])){
@@ -56,21 +58,36 @@ function run_once(){
 	
 
 
-	console.log(data[0].innerHTML + " " + data[1]);
-	return need_to_mute;
+	console.log(data[1]);
+	return [data[0], need_to_mute];
+}
+function caption_length(time1, time2){
+	// time1, time2 and strings of 00:00: TODO calc for hours
+	var t1 = time1.split(":");
+	var t2 = time2.split(":");
+
+	var mili1 = (t1[0]*60 + t1[1])*1000;
+	var mili2 = (t2[0]*60 + t2[1])*1000;
+
+	return mili2 - mili1
 }
 
 function go(){
-	var mute = run_once();
-	return [{success: true, need_to_mute:mute}];
+	var response = run_once();
+	var mute = response[1];
+	var time = response[0];
+	var capt_leng = caption_length(time[0],time[1]);
+	console.log(capt_leng);
+	return [{success: true, need_to_mute:mute}, capt_leng];
 };
 
-
+var time_to_wait = 1000;
 setInterval(function(){ 
 results = go();
+time_to_wait = results[1];
 chrome.runtime.sendMessage({
-  res: results
+  res: results[0]
 });
-}, 1000);
+}, time_to_wait);
 
 
