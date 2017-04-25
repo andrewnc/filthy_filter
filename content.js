@@ -1,12 +1,24 @@
-
+var number_of_errors = 0;
+var stop_running = false;
 
 function toggle_transcript(){
-	var more = document.getElementById("action-panel-overflow-button");
-	more.click();
-	var list = document.getElementById('action-panel-overflow-menu');
-	var child = list.getElementsByTagName('li')[1];
-	var transcript = child.getElementsByTagName('button')[0];
-	transcript.click();
+	if(!stop_running){
+		var more = document.getElementById("action-panel-overflow-button");
+		more.click();
+		var list = document.getElementById('action-panel-overflow-menu');
+		console.log(list);
+		var child = list.getElementsByTagName('li')[1];
+		if(child === undefined || child === null){
+			number_of_errors += 1;
+		}
+		if(number_of_errors == 8){
+			stop_running = true;
+		}
+		var transcript = child.getElementsByTagName('button')[0];
+		console.log(transcript);
+		transcript.click();
+	}
+	
 }
 
 function get_current_words_data(){
@@ -38,10 +50,11 @@ function get_current_words_data(){
 	return [time, current_words]
 }
 
-function run_once(){
+function check_sentence(){
 	var need_to_mute = false;
 	
 	toggle_transcript();
+	console.log(number_of_errors);
 
 	var data
 	data = get_current_words_data();
@@ -73,7 +86,7 @@ function caption_length(time1, time2){
 }
 
 function go(){
-	var response = run_once();
+	var response = check_sentence();
 	var mute = response[1];
 	var time = response[0];
 	var capt_leng = caption_length(time[0],time[1]);
@@ -81,12 +94,19 @@ function go(){
 };
 
 var time_to_wait = 1000;
-setInterval(function(){ 
-results = go();
-// time_to_wait = results[1];
-chrome.runtime.sendMessage({
-  res: results[0]
-});
-}, 1000);
+var stime = setInterval(filter, 1800);
+
+function filter(){
+	if(stop_running){
+		clearInterval(stime);
+	}
+	results = go();
+	// time_to_wait = results[1];
+	chrome.runtime.sendMessage({
+	  res: results[0]
+	});
+}
+
+
 
 
